@@ -6,10 +6,10 @@ import { PieceData } from "../../types/puzzle";
 
 type PuzzlePieceProps = PieceData;
 
-const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ id }) => {
+const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ id, result }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "puzzlePiece",
-    item: { id },
+    item: { id, result },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -25,7 +25,7 @@ const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ id }) => {
         },
       )}
     >
-      {id}
+      {result}
     </div>
   );
 };

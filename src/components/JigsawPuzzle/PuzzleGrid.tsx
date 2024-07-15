@@ -2,11 +2,11 @@ import clsx from "clsx";
 import React from "react";
 import { useDrop } from "react-dnd";
 
-import { GridData } from "../../types/puzzle";
+import { GridData, PieceData } from "../../types/puzzle";
 
 interface PuzzleGridProps {
   accept: string;
-  onDrop: (item: { id: number }, data: GridData) => void;
+  onDrop: (item: PieceData, data: GridData) => void;
   data: GridData;
 }
 
@@ -15,7 +15,7 @@ const PuzzleGrid: React.FC<PuzzleGridProps> = (
 ) => {
   const [{ isOver }, drop] = useDrop(() => ({
     accept,
-    drop: (item: { id: number }) => onDrop(item, data),
+    drop: (item: PieceData) => onDrop(item, data),
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
@@ -33,7 +33,7 @@ const PuzzleGrid: React.FC<PuzzleGridProps> = (
         },
       )}
     >
-      {data.id}
+      {data.problem}
     </div>
   );
 };

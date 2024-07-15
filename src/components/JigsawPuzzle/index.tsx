@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import PuzzlePiece from "./PuzzlePiece";
 import PuzzleGrid from "./PuzzleGrid";
 
 import { GridData, PieceData } from "../../types/puzzle";
+
+import { arithmeticProblemGenerator } from "../../services/math";
 
 interface JigsawPuzzleProps {
   image: string;
@@ -22,21 +24,18 @@ const shuffleArray = <T,>(array: T[]) => {
 const JigsawPuzzle: React.FC<JigsawPuzzleProps> = (
   { image, rows, columns },
 ) => {
-  const [pieces, setPieces] = useState(
-    shuffleArray(
+  const mathProblems = useMemo(
+    () =>
       Array.from({ length: rows * columns }, (_, index) => ({
+        ...arithmeticProblemGenerator.generateProblem(),
         id: index,
       })),
-    ),
+    [columns, rows],
   );
-  const [grid, setGrid] = useState<
-    GridData[]
-  >(
+  const [pieces, setPieces] = useState(shuffleArray(mathProblems));
+  const [grid, setGrid] = useState<GridData[]>(
     shuffleArray(
-      Array.from({ length: rows * columns }, (_, index) => ({
-        id: index,
-        solved: false,
-      })),
+      mathProblems.map((problem) => ({ ...problem, solved: false })),
     ),
   );
 
@@ -44,9 +43,9 @@ const JigsawPuzzle: React.FC<JigsawPuzzleProps> = (
     if (item.id === gridData.id) {
       setPieces((pieces) => pieces.filter((piece) => piece.id !== item.id));
       setGrid((grid) =>
-        grid.map(({ id, solved }) => ({
-          id,
-          solved: solved || id === gridData.id,
+        grid.map(({ solved, ...gridItem }) => ({
+          ...gridItem,
+          solved: solved || gridItem.id === gridData.id,
         }))
       );
     }
@@ -61,7 +60,7 @@ const JigsawPuzzle: React.FC<JigsawPuzzleProps> = (
           gridTemplateRows: `repeat(${rows}, 1fr)`,
           backgroundImage: `url(${image})`,
           backgroundSize: "contain",
-          backgroundRepeat: 'no-repeat'
+          backgroundRepeat: "no-repeat",
         }}
       >
         {grid.map((gridItem) => (
@@ -73,7 +72,7 @@ const JigsawPuzzle: React.FC<JigsawPuzzleProps> = (
           />
         ))}
       </div>
-      <div className="flex flex-wrap space-x-2">
+      <div className="flex flex-wrap gap-2">
         {pieces.map((piece) => <PuzzlePiece key={piece.id} {...piece} />)}
       </div>
     </div>
