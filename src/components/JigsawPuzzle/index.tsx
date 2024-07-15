@@ -11,23 +11,44 @@ interface JigsawPuzzleProps {
   columns: number;
 }
 
+const shuffleArray = <T,>(array: T[]) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
 const JigsawPuzzle: React.FC<JigsawPuzzleProps> = (
-  { rows, columns },
+  { image, rows, columns },
 ) => {
   const [pieces, setPieces] = useState(
-    Array.from({ length: rows * columns }, (_, index) => ({
-      id: index,
-    })),
+    shuffleArray(
+      Array.from({ length: rows * columns }, (_, index) => ({
+        id: index,
+      })),
+    ),
   );
   const [grid, setGrid] = useState<
-    { id: number }[]
-  >(Array.from({ length: rows * columns }, (_, index) => ({
-    id: index,
-  })));
+    GridData[]
+  >(
+    shuffleArray(
+      Array.from({ length: rows * columns }, (_, index) => ({
+        id: index,
+        solved: false,
+      })),
+    ),
+  );
 
   const handleDrop = (item: PieceData, gridData: GridData) => {
     if (item.id === gridData.id) {
       setPieces((pieces) => pieces.filter((piece) => piece.id !== item.id));
+      setGrid((grid) =>
+        grid.map(({ id, solved }) => ({
+          id,
+          solved: solved || id === gridData.id,
+        }))
+      );
     }
   };
 
@@ -38,6 +59,8 @@ const JigsawPuzzle: React.FC<JigsawPuzzleProps> = (
         style={{
           gridTemplateColumns: `repeat(${columns}, 1fr)`,
           gridTemplateRows: `repeat(${rows}, 1fr)`,
+          backgroundImage: `url(${image})`,
+          backgroundSize: "cover",
         }}
       >
         {grid.map((gridItem) => (

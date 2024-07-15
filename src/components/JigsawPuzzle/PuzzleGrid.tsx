@@ -26,7 +26,11 @@ const PuzzleGrid: React.FC<PuzzleGridProps> = (
       ref={drop}
       className={clsx(
         "text-black flex justify-center items-center min-w-[100px] min-h-[100px] border",
-        { "bg-blue-300": isOver, "bg-white": !isOver },
+        {
+          "bg-blue-300": isOver,
+          "bg-white": !isOver,
+          "opacity-0": data.solved,
+        },
       )}
     >
       {data.id}
