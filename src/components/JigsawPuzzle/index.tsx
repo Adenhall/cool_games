@@ -52,9 +52,9 @@ const JigsawPuzzle: React.FC<JigsawPuzzleProps> = (
   };
 
   return (
-    <div className="flex flex-col gap-8 justify-center items-center w-full h-full relative border-2 border-black">
+    <div className="flex flex-col flex-wrap gap-8 justify-center items-center w-full h-full relative border-2 border-black">
       <div
-        className="grid"
+        className="grid overflow-y-auto"
         style={{
           gridTemplateColumns: `repeat(${columns}, 1fr)`,
           gridTemplateRows: `repeat(${rows}, 1fr)`,
@@ -72,7 +72,7 @@ const JigsawPuzzle: React.FC<JigsawPuzzleProps> = (
           />
         ))}
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap justify-center gap-2 overflow-y-auto w-1/2">
         {pieces.map((piece) => <PuzzlePiece key={piece.id} {...piece} />)}
       </div>
     </div>

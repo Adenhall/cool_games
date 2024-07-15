@@ -7,8 +7,8 @@ function App() {
     <DndProvider backend={HTML5Backend}>
       <JigsawPuzzle
         image="/vite.svg"
-        rows={4}
-        columns={4}
+        rows={7}
+        columns={7}
       />
     </DndProvider>
   );

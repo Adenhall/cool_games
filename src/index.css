@@ -20,6 +20,8 @@
   height: 100vh;
 
   overflow: auto;
+
+  padding: 10px;
 }
 
 a {
