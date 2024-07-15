@@ -60,7 +60,8 @@ const JigsawPuzzle: React.FC<JigsawPuzzleProps> = (
           gridTemplateColumns: `repeat(${columns}, 1fr)`,
           gridTemplateRows: `repeat(${rows}, 1fr)`,
           backgroundImage: `url(${image})`,
-          backgroundSize: "cover",
+          backgroundSize: "contain",
+          backgroundRepeat: 'no-repeat'
         }}
       >
         {grid.map((gridItem) => (
