@@ -1,5 +1,17 @@
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
+import JigsawPuzzle from "./components/JigsawPuzzle";
+
 function App() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <JigsawPuzzle
+        image="/vite.svg"
+        rows={6}
+        columns={6}
+      />
+    </DndProvider>
+  );
 }
 
 export default App;
