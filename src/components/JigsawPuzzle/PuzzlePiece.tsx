@@ -1,13 +1,12 @@
+import clsx from "clsx";
 import React from "react";
 import { useDrag } from "react-dnd";
 
-interface PuzzlePieceProps {
-  id: number;
-  image: string;
-  position: { x: number; y: number };
-}
+import { PieceData } from "../../types/puzzle";
 
-const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ id, image, position }) => {
+type PuzzlePieceProps = PieceData;
+
+const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ id }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "puzzlePiece",
     item: { id },
@@ -19,17 +18,15 @@ const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ id, image, position }) => {
   return (
     <div
       ref={drag}
-      style={{
-        position: "absolute",
-        left: position.x,
-        top: position.y,
-        width: 100,
-        height: 100,
-        backgroundImage: `url(${image})`,
-        backgroundSize: "cover",
-        opacity: isDragging ? 0.5 : 1,
-      }}
-    />
+      className={clsx(
+        "bg-white text-black flex items-center justify-center rounded-lg w-[100px] h-[100px]",
+        {
+          "opacity-50": isDragging,
+        },
+      )}
+    >
+      {id}
+    </div>
   );
 };
 

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { useDrop } from "react-dnd";
+
 import PuzzlePiece from "./PuzzlePiece";
-import update from "immutability-helper";
+import PuzzleGrid from "./PuzzleGrid";
+
+import { GridData, PieceData } from "../../types/puzzle";
 
 interface JigsawPuzzleProps {
   image: string;
@@ -10,53 +12,46 @@ interface JigsawPuzzleProps {
 }
 
 const JigsawPuzzle: React.FC<JigsawPuzzleProps> = (
-  { image, rows, columns },
+  { rows, columns },
 ) => {
   const [pieces, setPieces] = useState(
     Array.from({ length: rows * columns }, (_, index) => ({
       id: index,
-      image: `${image}?${index}`,
-      position: {
-        x: (index % columns) * 100,
-        y: Math.floor(index / columns) * 100,
-      },
     })),
   );
+  const [grid, setGrid] = useState<
+    { id: number }[]
+  >(Array.from({ length: rows * columns }, (_, index) => ({
+    id: index,
+  })));
 
-  const [, drop] = useDrop(() => ({
-    accept: "puzzlePiece",
-    drop: (item: { id: number }, monitor) => {
-      const delta = monitor.getDifferenceFromInitialOffset() as {
-        x: number;
-        y: number;
-      };
-      const index = pieces.findIndex((piece) => piece.id === item.id);
-      const updatedPieces = update(pieces, {
-        [index]: {
-          position: {
-            $apply: (position) => ({
-              x: position.x + delta.x,
-              y: position.y + delta.y,
-            }),
-          },
-        },
-      });
-
-      setPieces(updatedPieces);
-    },
-  }), [pieces]);
+  const handleDrop = (item: PieceData, gridData: GridData) => {
+    if (item.id === gridData.id) {
+      setPieces((pieces) => pieces.filter((piece) => piece.id !== item.id));
+    }
+  };
 
   return (
-    <div
-      ref={drop}
-      style={{
-        width: columns * 100,
-        height: rows * 100,
-        position: "relative",
-        border: "1px solid black",
-      }}
-    >
-      {pieces.map((piece) => <PuzzlePiece key={piece.id} {...piece} />)}
+    <div className="flex flex-col gap-8 justify-center items-center w-full h-full relative border-2 border-black">
+      <div
+        className="grid"
+        style={{
+          gridTemplateColumns: `repeat(${columns}, 1fr)`,
+          gridTemplateRows: `repeat(${rows}, 1fr)`,
+        }}
+      >
+        {grid.map((gridItem) => (
+          <PuzzleGrid
+            key={gridItem.id}
+            accept="puzzlePiece"
+            onDrop={handleDrop}
+            data={gridItem}
+          />
+        ))}
+      </div>
+      <div className="flex flex-wrap space-x-2">
+        {pieces.map((piece) => <PuzzlePiece key={piece.id} {...piece} />)}
+      </div>
     </div>
   );
 };
