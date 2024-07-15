@@ -1,11 +1,12 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import PuzzlePiece from "./PuzzlePiece";
 import PuzzleGrid from "./PuzzleGrid";
 
 import { GridData, PieceData } from "../../types/puzzle";
 
-import { arithmeticProblemGenerator } from "../../services/math";
+import { arithmeticProblemGenerator } from "../../helpers/math";
+import { shuffleArray } from "../../helpers/array";
 
 interface JigsawPuzzleProps {
   image: string;
@@ -13,17 +14,7 @@ interface JigsawPuzzleProps {
   columns: number;
 }
 
-const shuffleArray = <T,>(array: T[]) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-};
-
-const JigsawPuzzle: React.FC<JigsawPuzzleProps> = (
-  { image, rows, columns },
-) => {
+const JigsawPuzzle = ({ image, rows, columns }: JigsawPuzzleProps) => {
   const mathProblems = useMemo(
     () =>
       Array.from({ length: rows * columns }, (_, index) => ({

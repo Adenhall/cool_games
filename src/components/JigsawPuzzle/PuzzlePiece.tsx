@@ -1,12 +1,11 @@
 import clsx from "clsx";
-import React from "react";
 import { useDrag } from "react-dnd";
 
 import { PieceData } from "../../types/puzzle";
 
 type PuzzlePieceProps = PieceData;
 
-const PuzzlePiece: React.FC<PuzzlePieceProps> = ({ id, result }) => {
+const PuzzlePiece = ({ id, result }: PuzzlePieceProps) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "puzzlePiece",
     item: { id, result },
