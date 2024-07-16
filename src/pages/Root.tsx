@@ -7,7 +7,7 @@ import { GameManagerProvider } from "../contexts/GameManagerContext";
 
 export const loader: LoaderFunction = ({ request }) => {
   const user = JSON.parse(window.localStorage.getItem("user") || "null");
-  if (user?.name && !request.url.includes("pick")) return redirect("/pick");
+  if (user?.name && request.url.endsWith("/")) return redirect("/pick");
   return user;
 };
 
