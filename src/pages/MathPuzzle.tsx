@@ -9,6 +9,7 @@ const MathPuzzle = () => {
   return (
     <div className="w-full h-full p-6 max-h-[90vh]">
       <JigsawPuzzle
+        key={`game-${currentLevel}`}
         image="/vite.svg"
         rows={rows}
         columns={columns}
