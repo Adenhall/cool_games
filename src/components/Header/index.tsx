@@ -1,6 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useLocalStorage } from "usehooks-ts";
+
+import { LocalStorageKeys } from "../../config/localStorage";
+import { User } from "../../types/user";
 
 const Header = () => {
+  const [user, , removeUser] = useLocalStorage<User | null>(
+    LocalStorageKeys.USER,
+    null,
+  );
+  const navigate = useNavigate();
+
+  const logout = () => {
+    removeUser();
+    navigate("/");
+  };
+
   return (
     <header className="bg-[#d1d8e0] border-b">
       <nav
@@ -19,6 +34,12 @@ const Header = () => {
           />
           <h1 className="font-bold text-2xl">Cool Games</h1>
         </Link>
+        {user && (
+          <div className="flex items-center space-x-4">
+            <h1 className="text-[#45aaf2] text-lg">Welcome, {user.name}!</h1>
+            <button className="text-gray-900" onClick={logout}>Not you?</button>
+          </div>
+        )}
       </nav>
     </header>
   );
