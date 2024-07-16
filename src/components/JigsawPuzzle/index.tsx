@@ -52,6 +52,7 @@ const JigsawPuzzle = ({ image, rows, columns }: JigsawPuzzleProps) => {
           backgroundImage: `url(${image})`,
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
+          backgroundPosition: "center"
         }}
       >
         {grid.map((gridItem) => (

@@ -24,7 +24,7 @@ export class ArithmeticProblemGenerator {
         result = num1 - num2;
         break;
       case "*":
-        problem = `${num1} * ${num2}`;
+        problem = `${num1} x ${num2}`;
         result = num1 * num2;
         break;
       case "/":
@@ -32,7 +32,7 @@ export class ArithmeticProblemGenerator {
         if (num2 === 0) {
           return this.generateProblem();
         }
-        problem = `${num1} / ${num2}`;
+        problem = `${num1} ÷ ${num2}`;
         result = num1 / num2;
         break;
       default:
