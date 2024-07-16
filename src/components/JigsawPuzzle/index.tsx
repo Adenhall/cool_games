@@ -12,16 +12,22 @@ interface JigsawPuzzleProps {
   image: string;
   rows: number;
   columns: number;
+  settings?: {
+    addition?: boolean
+    subtraction?: boolean
+    multiplication?: boolean
+    division?: boolean
+  }
 }
 
-const JigsawPuzzle = ({ image, rows, columns }: JigsawPuzzleProps) => {
+const JigsawPuzzle = ({ image, rows, columns, settings }: JigsawPuzzleProps) => {
   const mathProblems = useMemo(
     () =>
       Array.from({ length: rows * columns }, (_, index) => ({
-        ...arithmeticProblemGenerator.generateProblem(),
+        ...arithmeticProblemGenerator.generateProblem(settings),
         id: index,
       })),
-    [columns, rows],
+    [columns, rows, settings],
   );
   const [pieces, setPieces] = useState(shuffleArray(mathProblems));
   const [grid, setGrid] = useState<GridData[]>(
@@ -43,7 +49,7 @@ const JigsawPuzzle = ({ image, rows, columns }: JigsawPuzzleProps) => {
   };
 
   return (
-    <div className="flex flex-col flex-wrap gap-8 justify-center items-center w-full h-full relative border-2 border-black">
+    <div className="flex flex-col flex-wrap gap-8 justify-center items-center w-full h-full relative border-2 border-[#d1d8e0]">
       <div
         className="grid overflow-y-auto"
         style={{

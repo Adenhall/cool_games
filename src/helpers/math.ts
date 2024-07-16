@@ -1,3 +1,10 @@
+type Settings = {
+  addition?: boolean;
+  subtraction?: boolean;
+  multiplication?: boolean;
+  division?: boolean;
+};
+
 export class ArithmeticProblemGenerator {
   // Generate a random integer between min and max (inclusive)
   private getRandomInt(min: number, max: number): number {
@@ -5,10 +12,18 @@ export class ArithmeticProblemGenerator {
   }
 
   // Generate a random arithmetic problem
-  public generateProblem(): { problem: string; result: number } {
+  public generateProblem(
+    settings?: Settings,
+  ): { problem: string; result: number } {
     const num1 = this.getRandomInt(1, 100);
     const num2 = this.getRandomInt(1, 100);
-    const operations = ["+", "-", "*", "/"];
+    const operations = ["+", "-", "*", "/"].filter((operation) => {
+      if (!settings) return true;
+      if (settings.addition && operation === "+") return true;
+      if (settings.subtraction && operation === "-") return true;
+      if (settings.multiplication && operation === "*") return true;
+      if (settings.division && operation === "/") return true;
+    });
     const operation = operations[this.getRandomInt(0, operations.length - 1)];
 
     let problem: string;

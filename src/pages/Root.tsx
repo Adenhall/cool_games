@@ -3,6 +3,7 @@ import { DndProvider } from "react-dnd";
 import { LoaderFunction, Outlet, redirect } from "react-router-dom";
 
 import Header from "../components/Header";
+import { GameManagerProvider } from "../contexts/GameManagerContext";
 
 export const loader: LoaderFunction = ({ request }) => {
   const user = JSON.parse(window.localStorage.getItem("user") || "null");
@@ -12,10 +13,12 @@ export const loader: LoaderFunction = ({ request }) => {
 
 function Root() {
   return (
-    <DndProvider backend={HTML5Backend}>
-      <Header />
-      <Outlet />
-    </DndProvider>
+    <GameManagerProvider>
+      <DndProvider backend={HTML5Backend}>
+        <Header />
+        <Outlet />
+      </DndProvider>
+    </GameManagerProvider>
   );
 }
 
