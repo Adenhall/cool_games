@@ -1,6 +1,5 @@
 export const MATH_PUZZLE_LEVELS = [
   {
-    id: 0,
     rows: 1,
     columns: 1,
     addition: true,
@@ -10,7 +9,6 @@ export const MATH_PUZZLE_LEVELS = [
     name: "Level 1",
   },
   {
-    id: 1,
     rows: 2,
     columns: 1,
     addition: true,
@@ -20,7 +18,6 @@ export const MATH_PUZZLE_LEVELS = [
     name: "Level 2",
   },
   {
-    id: 2,
     rows: 2,
     columns: 2,
     addition: true,
@@ -30,7 +27,6 @@ export const MATH_PUZZLE_LEVELS = [
     name: "Level 3",
   },
   {
-    id: 3,
     rows: 2,
     columns: 2,
     addition: true,
@@ -40,7 +36,6 @@ export const MATH_PUZZLE_LEVELS = [
     name: "Level 4",
   },
   {
-    id: 4,
     rows: 3,
     columns: 3,
     addition: true,
@@ -50,7 +45,6 @@ export const MATH_PUZZLE_LEVELS = [
     name: "Level 5",
   },
   {
-    id: 5,
     rows: 3,
     columns: 3,
     addition: true,
@@ -60,7 +54,6 @@ export const MATH_PUZZLE_LEVELS = [
     name: "Level 6",
   },
   {
-    id: 6,
     rows: 4,
     columns: 4,
     addition: true,

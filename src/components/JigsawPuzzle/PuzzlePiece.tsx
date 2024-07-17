@@ -18,7 +18,7 @@ const PuzzlePiece = ({ id, result }: PuzzlePieceProps) => {
     <div
       ref={drag}
       className={clsx(
-        "bg-white text-black flex items-center justify-center rounded-lg w-[100px] h-[100px]",
+        "bg-[#45aaf2] text-black flex items-center justify-center rounded-lg w-[100px] h-[100px] cursor-pointer",
         {
           "opacity-50": isDragging,
         },
