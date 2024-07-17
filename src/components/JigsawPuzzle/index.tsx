@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import PuzzlePiece from "./PuzzlePiece";
 import PuzzleGrid from "./PuzzleGrid";
@@ -14,6 +14,7 @@ interface JigsawPuzzleProps {
   columns: number;
   onCorrect?: () => void;
   onWrong?: () => void;
+  onComplete?: () => void;
   settings?: {
     addition?: boolean;
     subtraction?: boolean;
@@ -23,7 +24,7 @@ interface JigsawPuzzleProps {
 }
 
 const JigsawPuzzle = (
-  { image, rows, columns, onCorrect, onWrong, settings }: JigsawPuzzleProps,
+  { image, rows, columns, onCorrect, onWrong, onComplete, settings }: JigsawPuzzleProps,
 ) => {
   const mathProblems = useMemo(
     () =>
@@ -56,6 +57,12 @@ const JigsawPuzzle = (
 
     onWrong && onWrong();
   };
+
+  useEffect(() => {
+    if (grid.every((gridItem) => gridItem.solved)) {
+      onComplete && onComplete();
+    }
+  }, [grid, onComplete])
 
   return (
     <div className="flex flex-col flex-wrap gap-8 justify-center items-center w-full h-full relative border-2 border-[#d1d8e0]">

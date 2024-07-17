@@ -1,15 +1,23 @@
-import React, { createContext, ReactNode, useContext, useState } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { toast } from "react-toastify";
 
 interface GameManagerContextProps {
   currentLevel: number;
   score: number;
   negativeScore: number;
   maxNegativeScore: number;
+  isGameOver: boolean;
   nextLevel: () => void;
   addScore: (points: number) => void;
   subtractScore: (points: number) => void;
   resetGame: () => void;
-  isGameOver: () => boolean;
 }
 
 const GameManagerContext = createContext<GameManagerContextProps | undefined>(
@@ -44,9 +52,16 @@ export const GameManagerProvider: React.FC<{ children: ReactNode }> = (
     setNegativeScore(0);
   };
 
-  const isGameOver = () => {
+  const isGameOver = useMemo(() => {
     return negativeScore >= maxNegativeScore;
-  };
+  }, [negativeScore]);
+
+  useEffect(() => {
+    if (isGameOver) {
+      toast.info("Game Over! Try Again");
+      resetGame();
+    }
+  }, [isGameOver]);
 
   return (
     <GameManagerContext.Provider

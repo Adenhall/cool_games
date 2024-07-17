@@ -6,15 +6,15 @@ type Props = {
 };
 
 const GameManager = ({ gameInfo }: Props) => {
-  const { currentLevel, nextLevel } = useGameManager();
+  const { currentLevel, resetGame } = useGameManager();
 
   if (!gameInfo) return null;
 
   return (
     <div className="text-[#45aaf2] flex items-center gap-2">
-      <h3>{gameInfo.title}</h3>
-      <p>Level {currentLevel}</p>
-      <button onClick={nextLevel}>Next Level</button>
+      <h1 className="text-xl">{gameInfo.title}</h1>
+      <p className="font-bold">Level {currentLevel}</p>
+      <button onClick={resetGame}>Reset Game</button>
     </div>
   );
 };

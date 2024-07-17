@@ -23,7 +23,7 @@ const MathPuzzle = () => {
     subtractScore,
     maxNegativeScore,
     negativeScore,
-    isGameOver,
+    nextLevel
   } = useGameManager();
   const { rows, columns, addition, subtraction, multiplication, division } =
     MATH_PUZZLE_LEVELS[currentLevel];
@@ -40,22 +40,21 @@ const MathPuzzle = () => {
   return (
     <>
       <Header />
-      {isGameOver()
-        ? <h1>GAME OVER</h1>
-        : (
-          <div className="w-full h-full p-6 h-5/6">
-            <h1>Chances left: {maxNegativeScore - negativeScore}</h1>
-            <JigsawPuzzle
-              key={`game-${currentLevel}`}
-              image="/vite.svg"
-              rows={rows}
-              columns={columns}
-              settings={{ addition, subtraction, multiplication, division }}
-              onCorrect={handleCorrect}
-              onWrong={handleWrong}
-            />
-          </div>
-        )}
+      <div className="w-full h-5/6 p-6">
+        <h1 className="text-lg">
+          Chances left: {maxNegativeScore - negativeScore}
+        </h1>
+        <JigsawPuzzle
+          key={`game-${currentLevel}`}
+          image="/vite.svg"
+          rows={rows}
+          columns={columns}
+          settings={{ addition, subtraction, multiplication, division }}
+          onCorrect={handleCorrect}
+          onWrong={handleWrong}
+          onComplete={nextLevel}
+        />
+      </div>
     </>
   );
 };
