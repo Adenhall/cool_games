@@ -6,6 +6,7 @@ import { User } from "../../types/user";
 import { GameData } from "../../types/game";
 
 import GameManager from "./GameManager";
+import clsx from "clsx";
 
 const Header = () => {
   const [user, , removeUser] = useLocalStorage<User | null>(
@@ -28,7 +29,10 @@ const Header = () => {
       >
         <Link
           to="/"
-          className="flex items-center space-x-2 lg:flex-1 -m-1.5 p-1.5"
+          className={clsx(
+            "flex items-center space-x-2 -m-1.5 p-1.5",
+            { "lg:flex-1": !gameInfo },
+          )}
         >
           <span className="sr-only">Your Company</span>
           <img

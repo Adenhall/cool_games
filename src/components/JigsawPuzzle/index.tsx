@@ -12,15 +12,19 @@ interface JigsawPuzzleProps {
   image: string;
   rows: number;
   columns: number;
+  onCorrect?: () => void;
+  onWrong?: () => void;
   settings?: {
-    addition?: boolean
-    subtraction?: boolean
-    multiplication?: boolean
-    division?: boolean
-  }
+    addition?: boolean;
+    subtraction?: boolean;
+    multiplication?: boolean;
+    division?: boolean;
+  };
 }
 
-const JigsawPuzzle = ({ image, rows, columns, settings }: JigsawPuzzleProps) => {
+const JigsawPuzzle = (
+  { image, rows, columns, onCorrect, onWrong, settings }: JigsawPuzzleProps,
+) => {
   const mathProblems = useMemo(
     () =>
       Array.from({ length: rows * columns }, (_, index) => ({
@@ -45,7 +49,12 @@ const JigsawPuzzle = ({ image, rows, columns, settings }: JigsawPuzzleProps) => 
           solved: solved || gridItem.id === gridData.id,
         }))
       );
+
+      onCorrect && onCorrect();
+      return;
     }
+
+    onWrong && onWrong();
   };
 
   return (
@@ -58,7 +67,7 @@ const JigsawPuzzle = ({ image, rows, columns, settings }: JigsawPuzzleProps) => 
           backgroundImage: `url(${image})`,
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
-          backgroundPosition: "center"
+          backgroundPosition: "center",
         }}
       >
         {grid.map((gridItem) => (

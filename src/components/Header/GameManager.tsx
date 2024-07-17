@@ -11,7 +11,7 @@ const GameManager = ({ gameInfo }: Props) => {
   if (!gameInfo) return null;
 
   return (
-    <div className="text-[#45aaf2] flex gap-2">
+    <div className="text-[#45aaf2] flex items-center gap-2">
       <h3>{gameInfo.title}</h3>
       <p>Level {currentLevel}</p>
       <button onClick={nextLevel}>Next Level</button>
