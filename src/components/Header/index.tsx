@@ -1,9 +1,11 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { useLocalStorage } from "usehooks-ts";
 
 import { LocalStorageKeys } from "../../config/localStorage";
 import { User } from "../../types/user";
-import { useGameManager } from "../../contexts/GameManagerContext";
+import { GameData } from "../../types/game";
+
+import GameManager from "./GameManager";
 
 const Header = () => {
   const [user, , removeUser] = useLocalStorage<User | null>(
@@ -11,7 +13,7 @@ const Header = () => {
     null,
   );
   const navigate = useNavigate();
-  const { currentLevel, nextLevel, gameInfo } = useGameManager();
+  const gameInfo = useLoaderData() as GameData | null;
 
   const logout = () => {
     removeUser();
@@ -36,13 +38,7 @@ const Header = () => {
           />
           <h1 className="font-bold text-2xl">Cool Games</h1>
         </Link>
-        {gameInfo && (
-          <div className="text-[#45aaf2] flex gap-2">
-            <h3>{gameInfo.title}</h3>
-            <p>Level {currentLevel}</p>
-            <button onClick={nextLevel}>Next Level</button>
-          </div>
-        )}
+        <GameManager gameInfo={gameInfo} />
         {user && (
           <div className="flex items-center space-x-4">
             <h1 className="text-[#45aaf2] text-lg">Welcome, {user.name}!</h1>

@@ -1,22 +1,6 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
-import { useLoaderData } from "react-router-dom";
-
-type GameType = "math_puzzle" | "symbol_search";
-
-type GameData = {
-  title: string;
-  type: GameType;
-  currentGame?: {
-    level: number;
-    score: number;
-  };
-};
 
 interface GameManagerContextProps {
-  gameInfo: {
-    title: string;
-    type: GameType;
-  } | null;
   currentLevel: number;
   score: number;
   negativeScore: number;
@@ -67,7 +51,6 @@ export const GameManagerProvider: React.FC<{ children: ReactNode }> = (
   return (
     <GameManagerContext.Provider
       value={{
-        gameInfo: loaderData,
         currentLevel: level,
         score,
         negativeScore,
