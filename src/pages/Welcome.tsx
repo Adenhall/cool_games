@@ -36,7 +36,7 @@ const Welcome = () => {
               id="name"
               name="name"
               type="text"
-              className="w-full h-full rounded-full border-0 py-1.5 pl-7 pr-20 text-4xl text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+              className="w-full h-full rounded-full border-0 py-1.5 pl-7 pr-7 text-center text-4xl text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
             />
           </div>
           <button

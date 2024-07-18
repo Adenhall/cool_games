@@ -1,11 +1,16 @@
 import { LoaderFunction } from "react-router";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { GameData } from "../types/game";
 
 import { useGameManager } from "../contexts/GameManagerContext";
+
 import { MATH_PUZZLE_LEVELS } from "../config/game";
 
 import JigsawPuzzle from "../components/JigsawPuzzle";
 import Header from "../components/Header";
-import { GameData } from "../types/game";
+import Modal from "../components/Modal";
 
 export const loader: LoaderFunction = (): GameData => {
   return {
@@ -23,10 +28,12 @@ const MathPuzzle = () => {
     subtractScore,
     maxNegativeScore,
     negativeScore,
-    nextLevel
+    nextLevel,
+    resetGame,
   } = useGameManager();
-  const { rows, columns, addition, subtraction, multiplication, division } =
-    MATH_PUZZLE_LEVELS[currentLevel];
+  const [showHiddenLevel, setShowHiddenLevel] = useState(false);
+  const navigate = useNavigate();
+  const levelData = MATH_PUZZLE_LEVELS[currentLevel];
 
   const handleCorrect = () => {
     pingSfx.play();
@@ -37,24 +44,50 @@ const MathPuzzle = () => {
     subtractScore(1);
   };
 
+  useEffect(() => {
+    if (!levelData) {
+      setShowHiddenLevel(true);
+    }
+  }, [levelData, resetGame]);
+
   return (
     <>
       <Header />
-      <div className="w-full h-5/6 p-6">
-        <h1 className="text-lg">
-          Chances left: {maxNegativeScore - negativeScore}
-        </h1>
-        <JigsawPuzzle
-          key={`game-${currentLevel}`}
-          image="/vite.svg"
-          rows={rows}
-          columns={columns}
-          settings={{ addition, subtraction, multiplication, division }}
-          onCorrect={handleCorrect}
-          onWrong={handleWrong}
-          onComplete={nextLevel}
-        />
-      </div>
+      {levelData && (
+        <div className="w-full h-5/6 p-6">
+          <h1 className="text-lg">
+            Chances left: {maxNegativeScore - negativeScore}
+          </h1>
+          <JigsawPuzzle
+            key={`game-${currentLevel}`}
+            image="/vite.svg"
+            onCorrect={handleCorrect}
+            onWrong={handleWrong}
+            onComplete={nextLevel}
+            {...levelData}
+          />
+        </div>
+      )}
+      {showHiddenLevel && (
+        <Modal
+          className="bg-sky-500/80"
+          onClick={() => setShowHiddenLevel(false)}
+        >
+          <div className="space-y-12">
+            <h1 className="text-4xl text-white text-center">
+              Ready for more fun?
+            </h1>
+            <div className="flex gap-4">
+              <button className="bg-red-400" onClick={resetGame}>
+                No thank you! Let me replay
+              </button>
+              <button onClick={() => navigate("/math-puzzle/special")}>
+                Ooohh! Show me more!
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };
