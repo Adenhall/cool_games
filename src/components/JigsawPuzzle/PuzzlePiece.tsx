@@ -2,10 +2,11 @@ import clsx from "clsx";
 import { useDrag } from "react-dnd";
 
 import { PieceData } from "../../types/puzzle";
+import { forwardRef } from "react";
 
 type PuzzlePieceProps = PieceData;
 
-const PuzzlePiece = ({ id, result }: PuzzlePieceProps) => {
+const PuzzlePiece = forwardRef<HTMLDivElement, PuzzlePieceProps>(({ id, result }, ref) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "puzzlePiece",
     item: { id, result },
@@ -16,7 +17,11 @@ const PuzzlePiece = ({ id, result }: PuzzlePieceProps) => {
 
   return (
     <div
-      ref={drag}
+      ref={(node) => {
+        drag(node)
+
+        if (ref) ref.current = node
+      }}
       className={clsx(
         "bg-[#45aaf2] text-black flex items-center justify-center rounded-lg w-[100px] h-[100px] cursor-pointer",
         {
@@ -27,6 +32,6 @@ const PuzzlePiece = ({ id, result }: PuzzlePieceProps) => {
       {result}
     </div>
   );
-};
+});
 
 export default PuzzlePiece;
