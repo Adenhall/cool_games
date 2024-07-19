@@ -1,6 +1,7 @@
 # Cool Games
 
 Intuitive and fun games that can be played in your browser.
+![Kapture 2024-07-20 at 02 09 19](https://github.com/user-attachments/assets/9822d011-0473-407a-b92f-97615cc24ea0)
 
 ## Prequesites
 You will need to have [Node.js](https://nodejs.org/en/) installed. That's it!
