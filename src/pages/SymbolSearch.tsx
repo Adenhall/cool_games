@@ -24,6 +24,7 @@ const SymbolSearch = () => {
     maxNegativeScore,
     nextLevel,
     gameTag,
+    resetGame
   } = useGameManager();
   const [symbols, setSymbols] = useState<string[]>([]);
   const [correctAnswersMap, setCorrectAnswersMap] = useState<
@@ -45,6 +46,7 @@ const SymbolSearch = () => {
 
   const newGame = useCallback(() => {
     const levelData = SYMBOL_SEARCH_LEVELS[currentLevel];
+    if (!levelData) return resetGame();
     const generated = generateString(levelData.feed, levelData.length).split(
       "",
     );
