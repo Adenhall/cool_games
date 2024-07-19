@@ -81,7 +81,7 @@ const MathPuzzle = () => {
               <button className="bg-red-400" onClick={resetGame}>
                 No thank you! Let me replay
               </button>
-              <button onClick={() => navigate("/math-puzzle/special")}>
+              <button onClick={() => navigate("/pick")}>
                 Ooohh! Show me more!
               </button>
             </div>
