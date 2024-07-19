@@ -1,30 +1,19 @@
-# React + TypeScript + Vite
+# Cool Games
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Intuitive and fun games that can be played in your browser.
 
-Currently, two official plugins are available:
+## Prequesites
+You will need to have [Node.js](https://nodejs.org/en/) installed. That's it!
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Understanding the architecture
+The core of the app is the `GameManagerContext` where it manages the levels and scores. Combined with [React Router DOM](https://reactrouter.com/), the game page loads data (game data, i.e title, game type, previous session, saved games,...) before the page is rendered. This gives a 1-page-1-data-request architecture so we get fresh data from our backend (in this case, `localStorage`) without having to manage complex global states. **Yes, I'm looking at you, Redux!**
 
-## Expanding the ESLint configuration
+## Running the app
+1. Ensure all the dependencies are installed
+```npm install```
+2. Run the app on port 5173
+```npm run dev```
+3. Go and play the games on http://localhost:5173 !
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Next steps
+- Making the games more interactive by adding handtracking.js: [PR in progress](https://github.com/Adenhall/cool_games/pull/1)
