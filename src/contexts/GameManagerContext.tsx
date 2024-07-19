@@ -9,6 +9,8 @@ import React, {
 import { toast } from "react-toastify";
 
 interface GameManagerContextProps {
+  /* random string to trigger effects */
+  gameTag: string;
   currentLevel: number;
   score: number;
   negativeScore: number;
@@ -27,6 +29,7 @@ const GameManagerContext = createContext<GameManagerContextProps | undefined>(
 export const GameManagerProvider: React.FC<{ children: ReactNode }> = (
   { children },
 ) => {
+  const [gameTag, setGameTag] = useState<string>(Math.random().toString());
   const [level, setLevel] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
   const [negativeScore, setNegativeScore] = useState<number>(0);
@@ -47,6 +50,7 @@ export const GameManagerProvider: React.FC<{ children: ReactNode }> = (
   };
 
   const resetGame = () => {
+    setGameTag(Math.random().toString());
     setLevel(0);
     setScore(0);
     setNegativeScore(0);
@@ -66,6 +70,7 @@ export const GameManagerProvider: React.FC<{ children: ReactNode }> = (
   return (
     <GameManagerContext.Provider
       value={{
+        gameTag,
         currentLevel: level,
         score,
         negativeScore,
