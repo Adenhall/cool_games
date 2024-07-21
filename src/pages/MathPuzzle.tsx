@@ -1,16 +1,16 @@
 import { LoaderFunction } from "react-router";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { GameData } from "../types/game";
 
 import { useGameManager } from "../contexts/GameManagerContext";
 
-import { MATH_PUZZLE_LEVELS } from "../config/game";
+import { CONGRATULATION_LINES, MATH_PUZZLE_LEVELS } from "../config/game";
 
 import JigsawPuzzle from "../components/JigsawPuzzle";
 import Header from "../components/Header";
-import Modal from "../components/Modal";
+import GameCompleteModal from "../components/GameCompleteModal";
 
 export const loader: LoaderFunction = (): GameData => {
   return {
@@ -31,8 +31,7 @@ const MathPuzzle = () => {
     nextLevel,
     resetGame,
   } = useGameManager();
-  const [showHiddenLevel, setShowHiddenLevel] = useState(false);
-  const navigate = useNavigate();
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
   const levelData = MATH_PUZZLE_LEVELS[currentLevel];
 
   const handleCorrect = () => {
@@ -44,9 +43,23 @@ const MathPuzzle = () => {
     subtractScore(1);
   };
 
+  const handleComplete = () => {
+    toast.success(
+      CONGRATULATION_LINES[currentLevel] ||
+        CONGRATULATION_LINES[
+          Math.floor(Math.random() * CONGRATULATION_LINES.length)
+        ],
+    );
+
+    setTimeout(() => {
+      nextLevel();
+    }, 2000);
+  };
+
   useEffect(() => {
     if (!levelData) {
-      setShowHiddenLevel(true);
+      resetGame();
+      setShowCompleteModal(true);
     }
   }, [levelData, resetGame]);
 
@@ -63,30 +76,16 @@ const MathPuzzle = () => {
             image="/vite.svg"
             onCorrect={handleCorrect}
             onWrong={handleWrong}
-            onComplete={nextLevel}
+            onComplete={handleComplete}
             {...levelData}
           />
         </div>
       )}
-      {showHiddenLevel && (
-        <Modal
+      {showCompleteModal && (
+        <GameCompleteModal
           className="bg-sky-500/80"
-          onClick={() => setShowHiddenLevel(false)}
-        >
-          <div className="space-y-12">
-            <h1 className="text-4xl text-white text-center">
-              Ready for more fun?
-            </h1>
-            <div className="flex gap-4">
-              <button className="bg-red-400" onClick={resetGame}>
-                No thank you! Let me replay
-              </button>
-              <button onClick={() => navigate("/math-puzzle/special")}>
-                Ooohh! Show me more!
-              </button>
-            </div>
-          </div>
-        </Modal>
+          onClick={() => setShowCompleteModal(false)}
+        />
       )}
     </>
   );
