@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
+import { toast } from "react-toastify";
 
-import Header from "../components/Header";
 import { GameData } from "../types/game";
 import { generateString } from "../helpers/string";
 import { useGameManager } from "../contexts/GameManagerContext";
-import { SYMBOL_SEARCH_LEVELS } from "../config/game";
+import { CONGRATULATION_LINES, SYMBOL_SEARCH_LEVELS } from "../config/game";
+
+import GameCompleteModal from "../components/GameCompleteModal";
+import Header from "../components/Header";
+import Spinner from "../components/Spinner";
+
 
 export const loader = (): GameData => {
   return {
@@ -24,7 +29,7 @@ const SymbolSearch = () => {
     maxNegativeScore,
     nextLevel,
     gameTag,
-    resetGame
+    resetGame,
   } = useGameManager();
   const [symbols, setSymbols] = useState<string[]>([]);
   const [correctAnswersMap, setCorrectAnswersMap] = useState<
@@ -33,6 +38,8 @@ const SymbolSearch = () => {
   const [magicSymbol, setMagicSymbol] = useState(
     symbols[Math.floor(Math.random() * symbols.length)],
   );
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
+  const [waiting, setWaiting] = useState(false);
   const requiredScore = symbols.filter((s) => s === magicSymbol).length;
 
   const handleOnClick = (symbol: string, idx: number) => {
@@ -46,7 +53,11 @@ const SymbolSearch = () => {
 
   const newGame = useCallback(() => {
     const levelData = SYMBOL_SEARCH_LEVELS[currentLevel];
-    if (!levelData) return resetGame();
+    if (!levelData) {
+      setShowCompleteModal(true);
+      resetGame();
+      return;
+    }
     const generated = generateString(levelData.feed, levelData.length).split(
       "",
     );
@@ -61,7 +72,12 @@ const SymbolSearch = () => {
 
   useEffect(() => {
     if (requiredScore === score && symbols.length) {
-      nextLevel();
+      toast.success(CONGRATULATION_LINES[currentLevel] || "Well done!");
+      setWaiting(true);
+      setTimeout(() => {
+        nextLevel();
+        setWaiting(false);
+      }, 2000);
     }
   }, [requiredScore, score, nextLevel, currentLevel, symbols]);
 
@@ -76,22 +92,32 @@ const SymbolSearch = () => {
         <h2 className="mb-5">
           Chances left: {maxNegativeScore - negativeScore}
         </h2>
-        <div className="flex flex-wrap gap-6 max-w-screen-md max-h-96 overflow-auto">
-          {symbols.map((symbol, idx) => (
-            <div
-              key={`${symbol}-${idx}`}
-              className={clsx(
-                "cursor-pointer w-5 h-5 flex justify-center items-center",
-                {
-                  "bg-black": correctAnswersMap[idx],
-                },
-              )}
-              onClick={() => handleOnClick(symbol, idx)}
-            >
-              {symbol}
+        {waiting
+          ? <Spinner />
+          : (
+            <div className="flex flex-wrap gap-6 max-w-screen-md max-h-96 overflow-auto">
+              {symbols.map((symbol, idx) => (
+                <div
+                  key={`${symbol}-${idx}`}
+                  className={clsx(
+                    "cursor-pointer w-5 h-5 flex justify-center items-center",
+                    {
+                      "bg-black": correctAnswersMap[idx],
+                    },
+                  )}
+                  onClick={() => handleOnClick(symbol, idx)}
+                >
+                  {symbol}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        {showCompleteModal && (
+          <GameCompleteModal
+            className="bg-sky-500/80"
+            onClick={() => setShowCompleteModal(false)}
+          />
+        )}
       </div>
     </>
   );
