@@ -8,7 +8,7 @@ const GamePicker = () => {
   const navigate = useNavigate();
   const { resetGame } = useGameManager();
 
-  useEffect(resetGame);
+  useEffect(resetGame, []);
 
   return (
     <>
