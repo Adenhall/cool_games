@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
 
-import Header from "../components/Header";
 import { GameData } from "../types/game";
 import { generateString } from "../helpers/string";
 import { useGameManager } from "../contexts/GameManagerContext";
 import { SYMBOL_SEARCH_LEVELS } from "../config/game";
+
+import GameCompleteModal from "../components/GameCompleteModal";
+import Header from "../components/Header";
 
 export const loader = (): GameData => {
   return {
@@ -24,7 +26,7 @@ const SymbolSearch = () => {
     maxNegativeScore,
     nextLevel,
     gameTag,
-    resetGame
+    resetGame,
   } = useGameManager();
   const [symbols, setSymbols] = useState<string[]>([]);
   const [correctAnswersMap, setCorrectAnswersMap] = useState<
@@ -33,6 +35,7 @@ const SymbolSearch = () => {
   const [magicSymbol, setMagicSymbol] = useState(
     symbols[Math.floor(Math.random() * symbols.length)],
   );
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
   const requiredScore = symbols.filter((s) => s === magicSymbol).length;
 
   const handleOnClick = (symbol: string, idx: number) => {
@@ -46,7 +49,11 @@ const SymbolSearch = () => {
 
   const newGame = useCallback(() => {
     const levelData = SYMBOL_SEARCH_LEVELS[currentLevel];
-    if (!levelData) return resetGame();
+    if (!levelData) {
+      setShowCompleteModal(true);
+      resetGame();
+      return;
+    }
     const generated = generateString(levelData.feed, levelData.length).split(
       "",
     );
@@ -92,6 +99,12 @@ const SymbolSearch = () => {
             </div>
           ))}
         </div>
+        {showCompleteModal && (
+          <GameCompleteModal
+            className="bg-sky-500/80"
+            onClick={() => setShowCompleteModal(false)}
+          />
+        )}
       </div>
     </>
   );

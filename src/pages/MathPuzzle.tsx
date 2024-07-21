@@ -1,6 +1,5 @@
 import { LoaderFunction } from "react-router";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { GameData } from "../types/game";
@@ -11,7 +10,7 @@ import { CONGRATULATION_LINES, MATH_PUZZLE_LEVELS } from "../config/game";
 
 import JigsawPuzzle from "../components/JigsawPuzzle";
 import Header from "../components/Header";
-import Modal from "../components/Modal";
+import GameCompleteModal from "../components/GameCompleteModal";
 
 export const loader: LoaderFunction = (): GameData => {
   return {
@@ -33,7 +32,6 @@ const MathPuzzle = () => {
     resetGame,
   } = useGameManager();
   const [showCompleteModal, setShowCompleteModal] = useState(false);
-  const navigate = useNavigate();
   const levelData = MATH_PUZZLE_LEVELS[currentLevel];
 
   const handleCorrect = () => {
@@ -84,24 +82,10 @@ const MathPuzzle = () => {
         </div>
       )}
       {showCompleteModal && (
-        <Modal
+        <GameCompleteModal
           className="bg-sky-500/80"
           onClick={() => setShowCompleteModal(false)}
-        >
-          <div className="space-y-12">
-            <h1 className="text-4xl text-white text-center">
-              Ready for more fun?
-            </h1>
-            <div className="flex gap-4">
-              <button className="bg-red-400" onClick={resetGame}>
-                No thank you! Let me replay
-              </button>
-              <button onClick={() => navigate("/pick")}>
-                Ooohh! Show me more!
-              </button>
-            </div>
-          </div>
-        </Modal>
+        />
       )}
     </>
   );
