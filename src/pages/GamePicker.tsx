@@ -1,9 +1,15 @@
 import { useNavigate } from "react-router";
 
 import Header from "../components/Header";
+import { useGameManager } from "../contexts/GameManagerContext";
+import { useEffect } from "react";
 
 const GamePicker = () => {
   const navigate = useNavigate();
+  const { resetGame } = useGameManager();
+
+  useEffect(resetGame);
+
   return (
     <>
       <Header />
