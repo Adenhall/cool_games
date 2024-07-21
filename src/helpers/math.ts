@@ -18,7 +18,7 @@ export class ArithmeticProblemGenerator {
     const num1 = this.getRandomInt(1, 100);
     const num2 = this.getRandomInt(1, 100);
     const operations = ["+", "-", "*", "/"].filter((operation) => {
-      if (!settings) return true;
+      if (!settings || Object.keys(settings).length === 0) return true;
       if (settings.addition && operation === "+") return true;
       if (settings.subtraction && operation === "-") return true;
       if (settings.multiplication && operation === "*") return true;
