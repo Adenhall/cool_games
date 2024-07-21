@@ -1,12 +1,13 @@
 import { LoaderFunction } from "react-router";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { GameData } from "../types/game";
 
 import { useGameManager } from "../contexts/GameManagerContext";
 
-import { MATH_PUZZLE_LEVELS } from "../config/game";
+import { CONGRATULATION_LINES, MATH_PUZZLE_LEVELS } from "../config/game";
 
 import JigsawPuzzle from "../components/JigsawPuzzle";
 import Header from "../components/Header";
@@ -31,7 +32,7 @@ const MathPuzzle = () => {
     nextLevel,
     resetGame,
   } = useGameManager();
-  const [showHiddenLevel, setShowHiddenLevel] = useState(false);
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
   const navigate = useNavigate();
   const levelData = MATH_PUZZLE_LEVELS[currentLevel];
 
@@ -44,9 +45,23 @@ const MathPuzzle = () => {
     subtractScore(1);
   };
 
+  const handleComplete = () => {
+    toast.success(
+      CONGRATULATION_LINES[currentLevel] ||
+        CONGRATULATION_LINES[
+          Math.floor(Math.random() * CONGRATULATION_LINES.length)
+        ],
+    );
+
+    setTimeout(() => {
+      nextLevel();
+    }, 2000);
+  };
+
   useEffect(() => {
     if (!levelData) {
-      setShowHiddenLevel(true);
+      resetGame();
+      setShowCompleteModal(true);
     }
   }, [levelData, resetGame]);
 
@@ -63,15 +78,15 @@ const MathPuzzle = () => {
             image="/vite.svg"
             onCorrect={handleCorrect}
             onWrong={handleWrong}
-            onComplete={nextLevel}
+            onComplete={handleComplete}
             {...levelData}
           />
         </div>
       )}
-      {showHiddenLevel && (
+      {showCompleteModal && (
         <Modal
           className="bg-sky-500/80"
-          onClick={() => setShowHiddenLevel(false)}
+          onClick={() => setShowCompleteModal(false)}
         >
           <div className="space-y-12">
             <h1 className="text-4xl text-white text-center">
