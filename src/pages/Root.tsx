@@ -1,5 +1,3 @@
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { DndProvider } from "react-dnd";
 import { LoaderFunction, Outlet, redirect } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -14,10 +12,8 @@ export const loader: LoaderFunction = ({ request }) => {
 function Root() {
   return (
     <GameManagerProvider>
-      <DndProvider backend={HTML5Backend}>
-        <Outlet />
-        <ToastContainer />
-      </DndProvider>
+      <Outlet />
+      <ToastContainer />
     </GameManagerProvider>
   );
 }
