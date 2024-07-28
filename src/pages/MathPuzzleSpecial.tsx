@@ -1,96 +1,118 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect } from "react";
 import Header from "../components/Header";
 import * as handTrack from "handtrackjs";
 import PuzzleGrid from "../components/JigsawPuzzle/PuzzleGrid";
 import PuzzlePiece from "../components/JigsawPuzzle/PuzzlePiece";
+import {
+  DragDropContext,
+  Droppable,
+  FluidDragActions,
+  SensorAPI,
+} from "@hello-pangea/dnd";
 
-const MathPuzzleSpecial = () => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const draggingRef = useRef<HTMLDivElement | null>(null);
-  // const [isHandDragging, setIsHandDragging] = useState(true)
+const useHandTrackSensor = (
+  api: SensorAPI,
+) => {
+  const runDetection = useCallback(
+    async (
+      model: handTrack.Model,
+      videoInput: HTMLVideoElement,
+      drag?: FluidDragActions,
+    ) => {
+      try {
+        const predictions = await model.detect(videoInput);
+        const closedHand = predictions.find((p) => p.label === "closed");
+        const openHand = predictions.find((p) => p.label === "open");
 
-  const handleHandDetected = useCallback((bbox: number[]) => {
-    if (draggingRef.current == null) return;
+        if (closedHand) {
+          console.log(closedHand.score);
+          const [x, y, width, height] = closedHand.bbox;
+          if (drag?.isActive()) {
+            drag.move({ x: x + width / 2, y: y + height / 2 });
+            return;
+          }
+          const preDrag = api.tryGetLock("1");
+          if (!preDrag) return;
 
-    const [x, y, width, height] = bbox;
-    const handX = x + width / 2;
-    const handY = y + height / 2;
-
-    const event = new MouseEvent("mousemove", {
-      clientX: handX,
-      clientY: handY,
-      bubbles: true,
-      cancelable: true,
-      view: window,
-    });
-    draggingRef.current.dispatchEvent(event);
-  }, []);
-
-  const runDetection = useCallback((model: handTrack.Model) => {
-    if (videoRef.current) {
-      model.detect(videoRef.current).then((predictions) => {
-        const closedHands = predictions.find((p) => p.label === "closed");
-        if (closedHands) {
-          draggingRef.current.dispatchEvent(
-            new Event("dragstart", {
-              bubbles: true,
-              cancelable: true,
-              view: window,
-              composed: true,
-            }),
-          );
-          handleHandDetected(closedHands.bbox);
+          drag = preDrag.fluidLift({ x: x + width / 2, y: y + height / 2 });
+        } else if (openHand) {
+          if (drag?.isActive()) {
+            drag.drop();
+          }
         }
-        requestAnimationFrame(() => runDetection(model));
-      });
-    }
-  }, [handleHandDetected]);
+      } catch (error) {
+        console.error("Detection error:", error);
+      } finally {
+        requestAnimationFrame(() => runDetection(model, videoInput, drag));
+      }
+    },
+    [api],
+  );
 
   useEffect(() => {
-    if (videoRef.current == null) return () => {};
+    const videoInput = document.getElementById(
+      "videoInput",
+    ) as HTMLVideoElement;
+    if (!videoInput) return () => {};
 
     (async () => {
       const model = await handTrack.load({
-        flipHorizontal: false,
+        flipHorizontal: true,
         outputStride: 16,
         imageScaleFactor: 1,
         maxNumBoxes: 20,
         iouThreshold: 0.2,
-        scoreThreshold: 0.6,
+        scoreThreshold: 0.8,
         modelType: "ssd320fpnlite",
         modelSize: "large",
         bboxLineWidth: "2",
         fontSize: 17,
       });
 
-      await handTrack.startVideo(videoRef.current!);
+      await handTrack.startVideo(videoInput);
 
-      runDetection(model);
+      runDetection(model, videoInput);
     })();
 
-    return () => handTrack.stopVideo(videoRef.current!);
+    return () => handTrack.stopVideo(videoInput);
   }, [runDetection]);
+};
 
+const MathPuzzleSpecial = () => {
   return (
     <>
       <Header />
       <video
-        ref={videoRef}
+        id="videoInput"
         autoPlay
-        style={{ width: 400, height: 400 }}
+        className="w-[200px] h-[200px] absolute top-20 left-0"
+        style={{ width: 200, height: 200, objectFit: "cover" }}
       />
-      <div className="w-full h-screen flex justify-center items-center">
-        <PuzzleGrid
-          accept="puzzlePiece"
-          onDrop={() => console.log("Mic dropped!")}
-          data={{
-            id: 1,
-            solved: false,
-            problem: "U mad??",
-          }}
-        />
-        <PuzzlePiece ref={draggingRef} id={1} result={1} />
-      </div>
+      <DragDropContext
+        onDragEnd={() => console.log("Dropped")}
+        sensors={[useHandTrackSensor]}
+      >
+        <div className="w-full h-screen flex justify-center items-center">
+          <PuzzleGrid
+            data={{
+              id: 1,
+              solved: false,
+              problem: "U mad??",
+            }}
+          />
+          <Droppable droppableId="pieces-container">
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                <PuzzlePiece index={0} id={1} result={1} />
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </div>
+      </DragDropContext>
     </>
   );
 };

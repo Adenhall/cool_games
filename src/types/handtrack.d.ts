@@ -20,7 +20,7 @@ declare module "handtrackjs" {
     bboxLineWidth: string;
     fontSize: number;
   }
-  const load: (params: LoadParams) => Promise<Model>;
+  const load: (params?: Optional<LoadParams>) => Promise<Model>;
 
   const startVideo: (video: HTMLVideoElement) => Promise<void>;
   const stopVideo: (video: HTMLVideoElement) => Promise<void>;

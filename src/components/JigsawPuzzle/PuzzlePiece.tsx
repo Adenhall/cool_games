@@ -2,7 +2,6 @@ import clsx from "clsx";
 import { Draggable, DraggableStateSnapshot, DraggableStyle } from "@hello-pangea/dnd";
 
 import { PieceData } from "../../types/puzzle";
-import { forwardRef } from "react";
 
 interface PuzzlePieceProps extends PieceData {
   index: number;
@@ -40,6 +39,6 @@ const PuzzlePiece = ({ id, index, result }: PuzzlePieceProps) => {
       )}
     </Draggable>
   );
-});
+};
 
 export default PuzzlePiece;
