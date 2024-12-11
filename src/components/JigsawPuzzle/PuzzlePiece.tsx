@@ -1,31 +1,43 @@
 import clsx from "clsx";
-import { useDrag } from "react-dnd";
+import { Draggable, DraggableStateSnapshot, DraggableStyle } from "@hello-pangea/dnd";
 
 import { PieceData } from "../../types/puzzle";
 
-type PuzzlePieceProps = PieceData;
+interface PuzzlePieceProps extends PieceData {
+  index: number;
+}
+function getStyle(style: DraggableStyle, snapshot: DraggableStateSnapshot) {
+  if (!snapshot.isDragging) return {};
+  if (!snapshot.isDropAnimating) {
+    return style;
+  }
 
-const PuzzlePiece = ({ id, result }: PuzzlePieceProps) => {
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: "puzzlePiece",
-    item: { id, result },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  }));
-
+  return {
+    ...style,
+    // cannot be 0, but make it super tiny
+    transitionDuration: `0.001s`
+  };
+}
+const PuzzlePiece = ({ id, index, result }: PuzzlePieceProps) => {
   return (
-    <div
-      ref={drag}
-      className={clsx(
-        "bg-[#45aaf2] text-black flex items-center justify-center rounded-lg w-[100px] h-[100px] cursor-pointer",
-        {
-          "opacity-50": isDragging,
-        },
+    <Draggable draggableId={`${id}`} index={index}>
+      {(provided, snapshot) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          style={getStyle(provided.draggableProps.style!, snapshot)}
+          className={clsx(
+            "bg-[#45aaf2] text-black flex items-center justify-center rounded-lg w-[100px] h-[100px] cursor-pointer",
+            {
+              "opacity-50": snapshot.isDragging,
+            },
+          )}
+        >
+          {result}
+        </div>
       )}
-    >
-      {result}
-    </div>
+    </Draggable>
   );
 };
 
